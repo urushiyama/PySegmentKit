@@ -6,7 +6,7 @@ This module is a python port of segmentation-kit perl script.
 Example call:
     from PySegmentKit import PySegmentKit, PSKError
 
-    sk = PySegmentationKit(args.data_dir,
+    sk = PySegmentKit(args.data_dir,
         disable_silence_at_ends=args.disable_silence_at_ends,
         leave_dict=args.leave_dict,
         debug=args.debug,
@@ -22,9 +22,9 @@ Example call:
     except PSKError as e:
         print(e)
 
-If you run __init__.py itself, it works as Command Line Interface (CLI).
+If you run main.py itself, it works as Command Line Interface (CLI).
 CLI usage:
-    python -m PySegmentationKit [data_dir] [--disable-silence-at-ends] [--leave-dict] [--debug] [--triphone] [--input-mfcc]
+    python main.py [data_dir] [--disable-silence-at-ends] [--leave-dict] [--debug] [--triphone] [--input-mfcc]
 
     Segment files under data_dir.
 
@@ -112,7 +112,7 @@ class UnsupportedTranscriptError(PSKError, ValueError):
     """
     pass
 
-class PySegmentationKit:
+class PySegmentKit:
     """ Object for phoneme segmentation.
 
     Attributes:
@@ -131,11 +131,11 @@ class PySegmentationKit:
         """
         pf = platform.system()
         if pf == 'Windows':
-            return Path(package_directory).joinpath('../bin/windows/julius.exe')
+            return Path(package_directory).joinpath('./bin/windows/julius.exe')
         elif pf == 'Darwin':
-            return Path(package_directory).joinpath('../bin/macos/julius')
+            return Path(package_directory).joinpath('./bin/macos/julius')
         elif pf == 'Linux':
-            return Path(package_directory).joinpath('../bin/linux/julius')
+            return Path(package_directory).joinpath('./bin/linux/julius')
         else:
             raise EnvironmentError(pf, 'Detected platform is not supported by module \'{}\''.format(__name__))
     
@@ -155,10 +155,10 @@ class PySegmentationKit:
         self.triphone=triphone
         if triphone:
             # triphone model
-            self.hmmdefs = Path(package_directory).joinpath('../models/hmmdefs_ptm_gid.binhmm') # triphone model
-            self.hlist = Path(package_directory).joinpath('../models/logicalTri')
+            self.hmmdefs = Path(package_directory).joinpath('./models/hmmdefs_ptm_gid.binhmm') # triphone model
+            self.hlist = Path(package_directory).joinpath('./models/logicalTri')
         else:
-            self.hmmdefs = Path(package_directory).joinpath('../models/hmmdefs_monof_mix16_gid.binhmm') # monophone model
+            self.hmmdefs = Path(package_directory).joinpath('./models/hmmdefs_monof_mix16_gid.binhmm') # monophone model
             self.hlist = None
         
         self.input_mfcc=input_mfcc
@@ -203,7 +203,7 @@ class PySegmentationKit:
                     line = line.rstrip()
                     if re.fullmatch(r'^[ \t\n]*$', line):
                         continue
-                    words.append(PySegmentationKit.yomi2voca(line))
+                    words.append(PySegmentKit.yomi2voca(line))
             
             if not self.disable_silence_at_ends:
                 words.append('silE')
@@ -615,7 +615,7 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
 
-    sk = PySegmentationKit(args.data_dir,
+    sk = PySegmentKit(args.data_dir,
         disable_silence_at_ends=args.disable_silence_at_ends,
         leave_dict=args.leave_dict,
         debug=args.debug,

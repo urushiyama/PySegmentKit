@@ -1,0 +1,6 @@
+include LICENSE
+include *.md
+include MANIFEST.in
+recursive-include PySegmentKit/bin *
+recursive-include PySegmentKit/models *
+recursive-include PySegmentKit/wav *
