@@ -43,3 +43,13 @@ $ pip install PySegmentKit
 $ git clone https://github.com/urushiyama/PySegmentKit.git
 $ python PySegmentKit/main.py -h # show detailed usage
 ```
+
+## License
+
+This library is released under MIT License.
+
+The original perl script, [julius-speech/segmentation-kit](https://github.com/julius-speech/segmentation-kit), is released under MIT License. 
+
+This library bundles some binaries of [Julius](https://github.com/julius-speech/julius), which is released under BSD 3-Clause "New" or "Revised" License.
+
+Please refer to [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md) for detail.
