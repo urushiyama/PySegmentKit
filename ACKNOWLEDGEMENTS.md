@@ -1,6 +1,6 @@
 # Acknowledgements
 
-This library uses a third-party application.
+This library uses a third-party application, "Large Vocabulary Continuous Speech Recognition Engine Julius".
 
 Also, this library is a port of [julius-speech/segmentation-kit](https://github.com/julius-speech/segmentation-kit).
 
@@ -46,6 +46,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
+
+### References
+
+> A. Lee, T. Kawahara and K. Shikano. "Julius --- An Open Source Real-Time Large Vocabulary Recognition Engine". In Proc. EUROSPEECH, pp.1691--1694, 2001.
+
+> A. Lee and T. Kawahara. "Recent Development of Open-Source Speech Recognition Engine Julius" Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC), 2009.
+
+> A. Lee and T. Kawahara: Julius v4.5 (2019) https://doi.org/10.5281/zenodo.2530395
 
 ## julius-speech/segmentation-kit
 
