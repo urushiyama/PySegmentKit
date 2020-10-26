@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="PySegmentKit",
-    version="0.1.1",
+    version="0.2.0",
     author="Yuta Urushiyama",
     author_email="aswif10flis1ntkb@gmail.com",
     description="A python-port of julius-speech/segmentation-kit",
