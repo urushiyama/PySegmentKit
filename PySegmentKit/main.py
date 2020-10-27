@@ -30,7 +30,7 @@ CLI usage:
 
     positional arguments:
      data_dir    a directory in which target files exists
-    
+
     optional arguments:
      -h, --help                 show this help message and exit
      --disable-silence-at-ends  disable inserting silence at begin/end of sentence (default: keep inserting)
@@ -82,7 +82,7 @@ class PSKError(Exception):
 
 class EnvironmentError(PSKError):
     """ Raised when the system is not supported.
-    
+
     Attributes:
         detected_platform -- expression of the detected platform
         message -- explanation of the error
@@ -138,7 +138,7 @@ class PySegmentKit:
             return Path(package_directory).joinpath('./bin/linux/julius')
         else:
             raise EnvironmentError(pf, 'Detected platform is not supported by module \'{}\''.format(__name__))
-    
+
     @property
     def offset_align(self):
         """ Returns calculated offset_align.
@@ -160,15 +160,15 @@ class PySegmentKit:
         else:
             self.hmmdefs = Path(package_directory).joinpath('./models/hmmdefs_monof_mix16_gid.binhmm') # monophone model
             self.hlist = None
-        
+
         self.input_mfcc=input_mfcc
         if input_mfcc:
             self.optargs=['-input', 'htkparam']
         else:
             self.optargs=['-input', 'file']
-        
+
         self.offset=25 # ms
-        
+
     def segment(self):
         """ execute phoneme segmentation.
         """
@@ -187,7 +187,7 @@ class PySegmentKit:
             files.append(basename)
             if item.suffix == '.WAV':
                 item.rename("{}.wav".format(basename))
-        
+
         segmented = {}
         for basename in files:
             print("{}.wav".format(basename))
@@ -196,7 +196,7 @@ class PySegmentKit:
             words = []
             if not self.disable_silence_at_ends:
                 words.append('silB')
-            
+
             transcript = Path('{}.txt'.format(basename))
             with transcript.open(encoding='utf-8') as f:
                 for line in f:
@@ -204,10 +204,10 @@ class PySegmentKit:
                     if re.fullmatch(r'^[ \t\n]*$', line):
                         continue
                     words.append(PySegmentKit.yomi2voca(line))
-            
+
             if not self.disable_silence_at_ends:
                 words.append('silE')
-            
+
             # generate dfa and dict for Julius
             dfafile = Path('{}.dfa'.format(basename))
             dictfile = Path('{}.dict'.format(basename))
@@ -219,7 +219,7 @@ class PySegmentKit:
                 for i in range(len(words)):
                     f.write("{} {} {} 0 {}\n".format(i, len(words) - i - 1, i + 1, '1' if i == 0 else '0'))
                 f.write("{} -1 -1 1 0\n".format(len(words)))
-            
+
             wlist = {}
             with dictfile.open(mode='w', encoding='utf-8') as f:
                 for i in range(len(words)):
@@ -233,6 +233,9 @@ class PySegmentKit:
             # execute Julius and store the output to log
             logfile = Path('{}.log'.format(basename))
             wavfile = Path('{}.wav'.format(basename))
+
+            # ensure julius is executable
+            os.chmod(str(self.julius_path), 0o755)
 
             command = [str(self.julius_path), '-h', str(self.hmmdefs), '-dfa', str(dfafile), '-v', str(dictfile)]
             command.append('-palign')
@@ -250,12 +253,12 @@ class PySegmentKit:
                     si = None
                     env = None
                 subprocess.run(command, input="{}\n".format(str(wavfile)), encoding='utf-8', stdout=log, stderr=subprocess.DEVNULL, startupinfo=si, env=env)
-            
+
             if not self.leave_dict and dfafile.exists():
                 dfafile.unlink()
             if not self.leave_dict and dictfile.exists():
                 dictfile.unlink()
-            
+
             # parse log and output result
             results = []
             resultfile = Path("{}.lab".format(basename))
@@ -283,11 +286,11 @@ class PySegmentKit:
                             results.append((begintime, endtime, unit))
                         if re.search(r'end forced alignment', line):
                             reading_alignment = False
-            
+
             print("Result saved in \"{}\".\n".format(str(resultfile)))
             segmented[basename] = results
         return segmented
-            
+
 
     @classmethod
     def yomi2voca(cls, yomi: str):
@@ -419,7 +422,7 @@ class PySegmentKit:
                 .replace('ろぉ', ' r o:')
                 .replace('わぁ', ' w a:')
                 .replace('をぉ', ' o:')
-                
+
                 .replace('う゛', ' b u')
                 .replace('でぃ', ' d i')
                 .replace('でぇ', ' d e:')
@@ -612,7 +615,7 @@ if __name__ == '__main__':
     # original comment-outs also can be set by args
     parser.add_argument('--triphone', action='store_true', help='use triphone model (default: use monophone model)')
     parser.add_argument('--input-mfcc', action='store_true', help='use MFCC file for input (default: use raw speech file)')
-    
+
     args = parser.parse_args()
 
     sk = PySegmentKit(args.data_dir,
